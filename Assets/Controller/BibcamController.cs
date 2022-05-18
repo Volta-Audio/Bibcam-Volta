@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using Bibcam.Decoder;
 using Bibcam.Encoder;
 using Avfi;
+using Klak.Ndi;
 
 sealed class BibcamController : MonoBehaviour
 {
@@ -19,12 +20,34 @@ sealed class BibcamController : MonoBehaviour
     [SerializeField] Text _depthLabel = null;
     [SerializeField] Text _recordLabel = null;
     [SerializeField] GameObject _recordSign = null;
+    [SerializeField] NdiSender _ndiSender;
+
+    const int _width = 2048;
+    const int _height = 1024;
+    Matrix4x4 _projection;
+
+    #endregion
+
+    #region Editable parameters
+
+    [Space]
+    [SerializeField] float _minDepth = 0.2f;
+    [SerializeField] float _maxDepth = 3.2f;
 
     #endregion
 
     #region Private members
 
     VideoRecorder Recorder => GetComponent<VideoRecorder>();
+
+    RcamMetadata MakeMetadata()
+      => new RcamMetadata
+      {
+          CameraPosition = _camera.transform.position,
+          CameraRotation = _camera.transform.rotation,
+          ProjectionMatrix = _projection,
+          DepthRange = new Vector2(_minDepth, _maxDepth)
+      };
 
     #endregion
 
@@ -68,6 +91,9 @@ sealed class BibcamController : MonoBehaviour
 
         // UI setup
         _depthSlider.value = PlayerPrefs.GetFloat("DepthSlider", 5);
+
+        // NDI sender instantiation
+        _ndiSender.sourceTexture = (RenderTexture)_encoder.EncodedTexture;
     }
 
     void Update()
@@ -85,6 +111,9 @@ sealed class BibcamController : MonoBehaviour
         _depthLabel.text = $"Depth Range: {minDepth:0.0}m - {maxDepth:0.0}m";
         PlayerPrefs.SetFloat("DepthSlider", maxDepth);
     }
+
+    void OnRenderObject()
+      => _ndiSender.metadata = MakeMetadata().Serialize();
 
     #endregion
 }

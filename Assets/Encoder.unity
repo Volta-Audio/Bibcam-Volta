@@ -307,6 +307,7 @@ GameObject:
   - component: {fileID: 476498934}
   - component: {fileID: 476498932}
   - component: {fileID: 476498935}
+  - component: {fileID: 476498936}
   m_Layer: 0
   m_Name: Bibcam
   m_TagString: Untagged
@@ -341,10 +342,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a783d6cd443845f480e68d807a6ebc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testMaterial: {fileID: 2100000, guid: fa85451f85d1b49c89bcdc9cc252088c, type: 2}
   _xrSource: {fileID: 476498934}
   _minDepth: 0.025
   _maxDepth: 5
   _shader: {fileID: 4800000, guid: 948b9b391aa114ce1be11a827d6a6d13, type: 3}
+  _ndiResources: {fileID: 0}
 --- !u!114 &476498933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -365,6 +368,8 @@ MonoBehaviour:
   _depthLabel: {fileID: 1358872242}
   _recordLabel: {fileID: 267278086}
   _recordSign: {fileID: 1766283826}
+  _ndiSender: {fileID: 476498936}
+  _ndiResources: {fileID: 0}
 --- !u!114 &476498934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -392,6 +397,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _source: {fileID: 0}
+--- !u!114 &476498936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 476498929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2d98e5bfcdff4847ad69efa861a8e7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ndiName: Bibcam
+  _keepAlpha: 0
+  _captureMethod: 2
+  _sourceCamera: {fileID: 0}
+  _sourceTexture: {fileID: 0}
+  _resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}
 --- !u!1 &565425546
 GameObject:
   m_ObjectHideFlags: 0
@@ -422,6 +445,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94509387823624a3db4b2fb0c365adb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _margin: 1
   _shader: {fileID: 4800000, guid: add5a8d52e2e749119e249f0a762eb85, type: 3}
 --- !u!114 &565425548
 MonoBehaviour:

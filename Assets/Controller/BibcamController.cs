@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using Bibcam.Decoder;
 using Bibcam.Encoder;
 using Avfi;
+using UnityEngine.XR.ARFoundation;
 using Klak.Ndi;
 
 sealed class BibcamController : MonoBehaviour
@@ -12,6 +13,8 @@ sealed class BibcamController : MonoBehaviour
     [Space]
     [SerializeField] BibcamEncoder _encoder = null;
     [SerializeField] Camera _camera = null;
+    [SerializeField] ARCameraManager _cameraManager = null;
+    [SerializeField] AROcclusionManager _occlusionManager = null;
     [Space]
     [SerializeField] BibcamMetadataDecoder _decoder = null;
     [SerializeField] BibcamTextureDemuxer _demuxer = null;
@@ -51,6 +54,25 @@ sealed class BibcamController : MonoBehaviour
 
     #endregion
 
+
+    #region Camera callbacks
+
+    void OnCameraFrameReceived(ARCameraFrameEventArgs args)
+    {
+        // We expect there is at least one texture.
+        if (args.textures.Count == 0) return;
+
+        // Try receiving the projection matrix.
+        if (args.projectionMatrix.HasValue)
+        {
+            _projection = args.projectionMatrix.Value;
+
+            // Aspect ratio compensation (camera vs. 16:9)
+            _projection[1, 1] *= (16.0f / 9) / _camera.aspect;
+        }
+    }
+
+    #endregion
     #region Public members (exposed for UI)
 
     public void OnRecordButton()
@@ -115,5 +137,17 @@ sealed class BibcamController : MonoBehaviour
     void OnRenderObject()
       => _ndiSender.metadata = MakeMetadata().Serialize();
 
+
+    void OnEnable()
+    {
+        // Camera callback setup
+        _cameraManager.frameReceived += OnCameraFrameReceived;
+    }
+
+    void OnDisable()
+    {
+        // Camera callback termination
+        _cameraManager.frameReceived -= OnCameraFrameReceived;
+    }
     #endregion
 }

@@ -410,7 +410,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2d98e5bfcdff4847ad69efa861a8e7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ndiName: Bibcam
+  _ndiName: Rcam
   _keepAlpha: 0
   _captureMethod: 2
   _sourceCamera: {fileID: 0}

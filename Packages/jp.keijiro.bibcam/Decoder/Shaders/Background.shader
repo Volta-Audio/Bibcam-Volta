@@ -40,6 +40,7 @@ void Fragment(float4 position : SV_Position,
 {
     // Color/depth samples
     float4 color = tex2D(_ColorTexture, texCoord);
+    /*
     float depth = tex2D(_DepthTexture, texCoord).x;
 
     // World space position
@@ -73,10 +74,11 @@ void Fragment(float4 position : SV_Position,
     float3 rgb = color.rgb;
     rgb = lerp(rgb, _DepthColor.rgb, _DepthColor.a * d_ovr);
     rgb = lerp(rgb, _StencilColor.rgb, _StencilColor.a * s_edge);
-
+    */
     // Output
-    outColor = float4(rgb, 1);
-    outDepth = DistanceToDepth(depth + _DepthOffset);
+    outColor = float4(color.rgb, 1);
+    outDepth = float4(color.rgb, 1);
+    // outDepth = DistanceToDepth(depth + _DepthOffset);
 }
 
     ENDCG

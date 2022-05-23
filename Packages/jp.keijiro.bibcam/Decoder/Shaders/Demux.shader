@@ -21,7 +21,7 @@ void VertexColor(float4 position : POSITION,
 {
     outPosition = UnityObjectToClipPos(position);
     outTexCoord = texCoord.xyxy * BibcamFrameSize.xyxy / float4(2, 1, 2, 2);
-    outTexCoord.x += BibcamFrameSize.x / 2;
+    // outTexCoord.x += BibcamFrameSize.x / 2;
 }
 
 float4 FragmentColor(float4 position : SV_Position,
@@ -43,6 +43,7 @@ void VertexDepth(float4 position : POSITION,
 {
     outPosition = float4(position.x * 2 - 1, 1 - position.y * 2, 1, 1);
     outTexCoord = texCoord * BibcamFrameSize / 2;
+    outTexCoord.x += BibcamFrameSize.x / 2;
     outTexCoord.y += BibcamFrameSize.y / 2;
 }
 

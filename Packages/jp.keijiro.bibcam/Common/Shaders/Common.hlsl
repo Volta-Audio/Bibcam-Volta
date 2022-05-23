@@ -65,27 +65,29 @@ float DecodeDepth(float3 rgb, float2 range)
 // UV coordinate remapping functions
 //
 // +-----+-----+  C: Color
-// |  Z  |     |  Z: Hue-encoded depth
-// +-----+  C  |  S: Human stencil
-// | S/M |     |  M: Metadata
+// |     |  Z  |  Z: Hue-encoded depth
+// +  C  +-----|  S: Human stencil
+// |     | S/M |  M: Metadata
 // +-----+-----+
-//
+// 
 
 float2 UV_FullToStencil(float2 uv)
 {
-    return uv * 2;
+    uv *= 2;
+    uv.x -= 1;
+    return uv;
 }
 
 float2 UV_FullToDepth(float2 uv)
 {
     uv *= 2;
-    uv.y -= 1;
+    uv -= 1;
     return uv;
 }
 
 float2 UV_FullToColor(float2 uv)
 {
-    uv.x = uv.x * 2 - 1;
+    uv.x *= 2;
     return uv;
 }
 
@@ -109,5 +111,5 @@ float2 UV_ColorToFull(float2 uv)
 
 float3 BibcamMux(float2 uv, float m, float3 c, float3 z, float s)
 {
-    return uv.x > 0.5 ? c : (uv.y > 0.5 ? z : float3(s, 0, m));
+    return uv.x < 0.5 ? c : (uv.y > 0.5 ? z : float3(s, 0, m));
 }

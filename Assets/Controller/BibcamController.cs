@@ -120,18 +120,21 @@ sealed class BibcamController : MonoBehaviour
 
     void Update()
     {
+        // TOBY UPDATE: temporarily turning off any dynamic updating of depth. All depth ranges are set 0.2-5 in the Unity inspector. This matches the Volta Create sliders.
+        // Next steps: check the re-mapping of range in Volta Create, as the depth map image is bounded by the depth range metadata?
+
         // Depth range settings update
-        var maxDepth = _depthSlider.value;
-        var minDepth = maxDepth / 50;
-        (_encoder.minDepth, _encoder.maxDepth) = (minDepth, maxDepth);
+        // var maxDepth = _depthSlider.value;
+        // var minDepth = maxDepth / 50;
+        // (_encoder.minDepth, _encoder.maxDepth) = (minDepth, maxDepth);
 
         // Monitor update
         _decoder.Decode(_encoder.EncodedTexture);
         _demuxer.Demux(_encoder.EncodedTexture, _decoder.Metadata);
 
         // UI update
-        _depthLabel.text = $"Depth Range: {minDepth:0.0}m - {maxDepth:0.0}m";
-        PlayerPrefs.SetFloat("DepthSlider", maxDepth);
+        // _depthLabel.text = $"Depth Range: {minDepth:0.0}m - {maxDepth:0.0}m";
+        // PlayerPrefs.SetFloat("DepthSlider", maxDepth);
     }
 
     void OnRenderObject()

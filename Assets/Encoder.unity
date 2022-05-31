@@ -343,7 +343,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _xrSource: {fileID: 476498934}
-  _minDepth: 0.025
+  _minDepth: 0.2
   _maxDepth: 5
   _shader: {fileID: 4800000, guid: 948b9b391aa114ce1be11a827d6a6d13, type: 3}
 --- !u!114 &476498933
@@ -370,7 +370,7 @@ MonoBehaviour:
   _recordSign: {fileID: 1766283826}
   _ndiSender: {fileID: 476498936}
   _minDepth: 0.2
-  _maxDepth: 3.2
+  _maxDepth: 5
 --- !u!114 &476498934
 MonoBehaviour:
   m_ObjectHideFlags: 0

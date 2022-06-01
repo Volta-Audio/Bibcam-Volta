@@ -380,7 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 371410545873b41d68866d13c5be1adc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _source: {fileID: 0}
+  _source: {fileID: 8400000, guid: 0b05cc1ddca3d4298b95791fd762ba4d, type: 2}
 --- !u!114 &476498936
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397,7 +397,7 @@ MonoBehaviour:
   _keepAlpha: 0
   _captureMethod: 2
   _sourceCamera: {fileID: 0}
-  _sourceTexture: {fileID: 0}
+  _sourceTexture: {fileID: 8400000, guid: 0b05cc1ddca3d4298b95791fd762ba4d, type: 2}
   _resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}
 --- !u!1 &611549338
 GameObject:

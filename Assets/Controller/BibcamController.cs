@@ -114,12 +114,6 @@ sealed class BibcamController : MonoBehaviour
     {
         Application.targetFrameRate = _targetFPS;
 
-        // Recorder setup
-        _recorder.source = (RenderTexture)_encoder.EncodedTexture;
-
-        // NDI sender instantiation
-        _ndiSender.sourceTexture = (RenderTexture)_encoder.EncodedTexture;
-
         // Encoder setup
         (_encoder.minDepth, _encoder.maxDepth) = (_minDepth, _maxDepth); // This is no longer dynamic, need to instead set in Update if so.
 

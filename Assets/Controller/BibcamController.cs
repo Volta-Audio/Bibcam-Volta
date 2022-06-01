@@ -38,15 +38,6 @@ sealed class BibcamController : MonoBehaviour
 
     VideoRecorder _recorder => GetComponent<VideoRecorder>();
 
-    RcamMetadata MakeMetadata()
-      => new RcamMetadata
-      {
-          CameraPosition = _camera.transform.position,
-          CameraRotation = _camera.transform.rotation,
-          ProjectionMatrix = _projection,
-          DepthRange = new Vector2(_minDepth, _maxDepth)
-      };
-
     const string _recordOffMessage = "Record to device";
     const string _recordOnMessage = "Stop";
 
@@ -67,6 +58,16 @@ sealed class BibcamController : MonoBehaviour
             // Aspect ratio compensation (camera vs. 16:9)
             _projection[1, 1] *= (16.0f / 9) / _camera.aspect;
         }
+
+        var metadata = new RcamMetadata
+        {
+            CameraPosition = _camera.transform.position,
+            CameraRotation = _camera.transform.rotation,
+            ProjectionMatrix = _projection,
+            DepthRange = new Vector2(_minDepth, _maxDepth)
+        };
+
+        _ndiSender.metadata = metadata.Serialize();
     }
 
     #endregion
@@ -120,10 +121,6 @@ sealed class BibcamController : MonoBehaviour
         _recordToggle.onValueChanged.AddListener((isOn) => OnRecordButton(isOn));
         _recordLabel.text = _recordOffMessage;
     }
-
-    void OnRenderObject()
-      => _ndiSender.metadata = MakeMetadata().Serialize();
-
 
     void OnEnable()
     {

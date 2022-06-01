@@ -353,7 +353,7 @@ MonoBehaviour:
   _ndiSender: {fileID: 476498936}
   _targetFPS: 30
   _minDepth: 0.01
-  _maxDepth: 20
+  _maxDepth: 5
 --- !u!114 &476498934
 MonoBehaviour:
   m_ObjectHideFlags: 0

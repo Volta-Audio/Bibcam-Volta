@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 using Bibcam.Common;
 
 namespace Bibcam.Encoder {
@@ -9,7 +10,7 @@ public sealed class BibcamEncoder : MonoBehaviour
 
     public float minDepth { get => _minDepth; set => _minDepth = value; }
     public float maxDepth { get => _maxDepth; set => _maxDepth = value; }
-    public Texture EncodedTexture => _encoded;
+    public RenderTexture EncodedTexture = null;
 
     #endregion
 
@@ -30,7 +31,6 @@ public sealed class BibcamEncoder : MonoBehaviour
     #region Private objects
 
     Material _material;
-    RenderTexture _encoded;
     GraphicsBuffer _metadata;
     Metadata[] _tempArray = new Metadata[1];
 
@@ -40,8 +40,9 @@ public sealed class BibcamEncoder : MonoBehaviour
 
     void Start()
     {
+        Assert.IsNotNull(EncodedTexture, "Render Texture not set");
+        
         _material = new Material(_shader);
-        _encoded = GfxUtil.RGBARenderTexture(1920, 1080);
         _metadata = GfxUtil.StructuredBuffer(12, sizeof(float));
         Application.onBeforeRender += OnBeforeApplicationRender;
     }
@@ -49,7 +50,6 @@ public sealed class BibcamEncoder : MonoBehaviour
     void OnDestroy()
     {
         Destroy(_material);
-        Destroy(_encoded);
         _metadata.Dispose();
         Application.onBeforeRender -= OnBeforeApplicationRender;
     }
@@ -100,7 +100,7 @@ public sealed class BibcamEncoder : MonoBehaviour
         _material.SetBuffer(ShaderID.Metadata, _metadata);
 
         // Encoding and multiplexing
-        Graphics.Blit(null, _encoded, _material);
+        Graphics.Blit(null, EncodedTexture, _material);
     }
 
     #endregion

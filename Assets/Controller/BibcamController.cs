@@ -16,9 +16,6 @@ sealed class BibcamController : MonoBehaviour
     [SerializeField] ARCameraManager _cameraManager = null;
     [SerializeField] AROcclusionManager _occlusionManager = null;
     [Space]
-    [SerializeField] BibcamMetadataDecoder _decoder = null;
-    [SerializeField] BibcamTextureDemuxer _demuxer = null;
-    [Space]
     [SerializeField] Text _recordLabel = null;
     [SerializeField] GameObject _recordSign = null;
     [SerializeField] NdiSender _ndiSender;
@@ -32,8 +29,6 @@ sealed class BibcamController : MonoBehaviour
     [SerializeField] int _targetFPS = 30; // For archival recording, 60 is within capability of a LiDAR iPhone. But generally for streaming to app etc. 30 probably a good compromise.
     [SerializeField] float _minDepth = 0.01f;
     [SerializeField] float _maxDepth = 20.0f;
-    [SerializeField] int _canvasWidth = 2048;
-    [SerializeField] int _canvasHeight = 1024;
 
     #endregion
 
@@ -114,13 +109,6 @@ sealed class BibcamController : MonoBehaviour
 
         // Encoder setup
         (_encoder.minDepth, _encoder.maxDepth) = (_minDepth, _maxDepth); // This is no longer dynamic, need to instead set in Update if so.
-    }
-
-    void Update()
-    {
-        // Monitor update
-        _decoder.Decode(_encoder.EncodedTexture);
-        _demuxer.Demux(_encoder.EncodedTexture, _decoder.Metadata);
     }
 
     void OnRenderObject()

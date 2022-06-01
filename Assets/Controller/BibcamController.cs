@@ -19,29 +19,29 @@ sealed class BibcamController : MonoBehaviour
     [SerializeField] BibcamMetadataDecoder _decoder = null;
     [SerializeField] BibcamTextureDemuxer _demuxer = null;
     [Space]
-    [SerializeField] Slider _depthSlider = null;
-    [SerializeField] Text _depthLabel = null;
     [SerializeField] Text _recordLabel = null;
     [SerializeField] GameObject _recordSign = null;
     [SerializeField] NdiSender _ndiSender;
-
-    const int _width = 2048;
-    const int _height = 1024;
-    Matrix4x4 _projection;
 
     #endregion
 
     #region Editable parameters
 
     [Space]
-    [SerializeField] float _minDepth = 0.2f;
-    [SerializeField] float _maxDepth = 3.2f;
+
+    [SerializeField] int _targetFPS = 30; // For archival recording, 60 is within capability of a LiDAR iPhone. But generally for streaming to app etc. 30 probably a good compromise.
+    [SerializeField] float _minDepth = 0.01f;
+    [SerializeField] float _maxDepth = 20.0f;
+    [SerializeField] int _canvasWidth = 2048;
+    [SerializeField] int _canvasHeight = 1024;
 
     #endregion
 
     #region Private members
 
-    VideoRecorder Recorder => GetComponent<VideoRecorder>();
+    Matrix4x4 _projection;
+
+    VideoRecorder _recorder => GetComponent<VideoRecorder>();
 
     RcamMetadata MakeMetadata()
       => new RcamMetadata
@@ -53,7 +53,6 @@ sealed class BibcamController : MonoBehaviour
       };
 
     #endregion
-
 
     #region Camera callbacks
 
@@ -77,10 +76,10 @@ sealed class BibcamController : MonoBehaviour
 
     public void OnRecordButton()
     {
-        if (Recorder.IsRecording)
+        if (_recorder.IsRecording)
         {
             // Stop recording
-            Recorder.EndRecording();
+            _recorder.EndRecording();
             _recordLabel.text = "Record";
             _recordLabel.color = Color.white;
             _recordSign.SetActive(false);
@@ -92,7 +91,7 @@ sealed class BibcamController : MonoBehaviour
               = -_camera.transform.localPosition;
 
             // Start recording
-            Recorder.StartRecording();
+            _recorder.StartRecording();
             _recordLabel.text = "Stop";
             _recordLabel.color = Color.red;
             _recordSign.SetActive(true);
@@ -105,36 +104,23 @@ sealed class BibcamController : MonoBehaviour
 
     void Start()
     {
-        // We have a good phone. Crank it up to 60 fps.
-        Application.targetFrameRate = 60;
+        Application.targetFrameRate = _targetFPS;
 
         // Recorder setup
-        Recorder.source = (RenderTexture)_encoder.EncodedTexture;
-
-        // UI setup
-        _depthSlider.value = PlayerPrefs.GetFloat("DepthSlider", 5);
+        _recorder.source = (RenderTexture)_encoder.EncodedTexture;
 
         // NDI sender instantiation
         _ndiSender.sourceTexture = (RenderTexture)_encoder.EncodedTexture;
+
+        // Encoder setup
+        (_encoder.minDepth, _encoder.maxDepth) = (_minDepth, _maxDepth); // This is no longer dynamic, need to instead set in Update if so.
     }
 
     void Update()
     {
-        // TOBY UPDATE: temporarily turning off any dynamic updating of depth. All depth ranges are set 0.2-5 in the Unity inspector. This matches the Volta Create sliders.
-        // Next steps: check the re-mapping of range in Volta Create, as the depth map image is bounded by the depth range metadata?
-
-        // Depth range settings update
-        // var maxDepth = _depthSlider.value;
-        // var minDepth = maxDepth / 50;
-        // (_encoder.minDepth, _encoder.maxDepth) = (minDepth, maxDepth);
-
         // Monitor update
         _decoder.Decode(_encoder.EncodedTexture);
         _demuxer.Demux(_encoder.EncodedTexture, _decoder.Metadata);
-
-        // UI update
-        // _depthLabel.text = $"Depth Range: {minDepth:0.0}m - {maxDepth:0.0}m";
-        // PlayerPrefs.SetFloat("DepthSlider", maxDepth);
     }
 
     void OnRenderObject()

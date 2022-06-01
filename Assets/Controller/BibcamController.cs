@@ -17,7 +17,7 @@ sealed class BibcamController : MonoBehaviour
     [SerializeField] AROcclusionManager _occlusionManager = null;
     [Space]
     [SerializeField] Text _recordLabel = null;
-    [SerializeField] GameObject _recordSign = null;
+    [SerializeField] Toggle _recordToggle = null;
     [SerializeField] NdiSender _ndiSender;
 
     #endregion
@@ -47,6 +47,9 @@ sealed class BibcamController : MonoBehaviour
           DepthRange = new Vector2(_minDepth, _maxDepth)
       };
 
+    const string _recordOffMessage = "Record to device";
+    const string _recordOnMessage = "Stop";
+
     #endregion
 
     #region Camera callbacks
@@ -69,27 +72,37 @@ sealed class BibcamController : MonoBehaviour
     #endregion
     #region Public members (exposed for UI)
 
-    public void OnRecordButton()
+    public void OnRecordButton(bool isOn)
     {
-        if (_recorder.IsRecording)
+        if (isOn)
         {
-            // Stop recording
-            _recorder.EndRecording();
-            _recordLabel.text = "Record";
-            _recordLabel.color = Color.white;
-            _recordSign.SetActive(false);
-        }
-        else
-        {
+            if (_recorder.IsRecording)
+            {
+                Debug.LogWarning("Record button toggled off but not already recording");
+                return;
+            }
+
             // Reset the camera position.
             _camera.transform.parent.position
               = -_camera.transform.localPosition;
 
             // Start recording
             _recorder.StartRecording();
-            _recordLabel.text = "Stop";
+            _recordLabel.text = _recordOnMessage;
             _recordLabel.color = Color.red;
-            _recordSign.SetActive(true);
+        }
+        else
+        {
+            if (!_recorder.IsRecording)
+            {
+                Debug.LogWarning("Record button toggled on but already recording");
+                return;
+            }
+
+            // Stop recording
+            _recorder.EndRecording();
+            _recordLabel.text = _recordOffMessage;
+            _recordLabel.color = Color.white;
         }
     }
 
@@ -109,6 +122,9 @@ sealed class BibcamController : MonoBehaviour
 
         // Encoder setup
         (_encoder.minDepth, _encoder.maxDepth) = (_minDepth, _maxDepth); // This is no longer dynamic, need to instead set in Update if so.
+
+        _recordToggle.onValueChanged.AddListener((isOn) => OnRecordButton(isOn));
+        _recordLabel.text = _recordOffMessage;
     }
 
     void OnRenderObject()

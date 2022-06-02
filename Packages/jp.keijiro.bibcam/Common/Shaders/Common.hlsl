@@ -91,6 +91,12 @@ float2 UV_FullToColor(float2 uv)
     return uv;
 }
 
+float2 UV_FullToMetadata(float2 uv)
+{
+    uv.x -= 0.5;
+    return uv;
+}
+
 float2 UV_StencilToFull(float2 uv)
 {
     return uv * 0.5;

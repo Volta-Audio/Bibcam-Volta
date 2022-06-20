@@ -118,6 +118,9 @@ sealed class BibcamController : MonoBehaviour
         // Encoder setup
         (_encoder.minDepth, _encoder.maxDepth) = (_minDepth, _maxDepth); // This is no longer dynamic, need to instead set in Update if so.
 
+        // Camera setup
+        (_camera.nearClipPlane, _camera.farClipPlane) = (_minDepth, _maxDepth); // This is no longer dynamic, need to instead set in Update if so.
+
         _recordToggle.onValueChanged.AddListener((isOn) => OnRecordButton(isOn));
         _recordLabel.text = _recordOffMessage;
     }
